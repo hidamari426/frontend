@@ -1,3 +1,4 @@
+import { supabase } from "../utils/supabase";
 export type TransactionType = "expense" | "income";
 
 export type Transaction = {
@@ -11,15 +12,13 @@ export type Transaction = {
 
 export const TRANSACTION_STORAGE_KEY = "money-app-transactions";
 
-export const getTransactions = (): Transaction[] => {
+export const getTransactions = async (): Promise<Transaction[]> => {
   try {
-    const savedTransactions = localStorage.getItem(TRANSACTION_STORAGE_KEY);
+    let { data: transactions } = await supabase
+      .from("transactions")
+      .select("*");
 
-    if (!savedTransactions) {
-      return [];
-    }
-
-    return JSON.parse(savedTransactions) as Transaction[];
+    return transactions as Transaction[];
   } catch {
     return [];
   }

@@ -2,6 +2,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useEffect,
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import {
@@ -168,9 +169,14 @@ const CalendarPage = () => {
     () => new Date(today.getFullYear(), today.getMonth(), 1),
   );
 
-  const [transactions, setTransactions] = useState<Transaction[]>(() =>
-    getTransactions(),
-  );
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const fetchedTransactions = await getTransactions();
+      setTransactions(fetchedTransactions);
+    };
+    fetchTransactions();
+  }, []);
 
   const currentYear = currentMonth.getFullYear();
   const currentMonthIndex = currentMonth.getMonth();
