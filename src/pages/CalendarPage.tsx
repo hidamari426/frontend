@@ -103,7 +103,7 @@ const SwipeableTransaction = ({
         type="button"
         onClick={handleDelete}
         aria-label={`${transaction.category}を削除`}
-        className="absolute inset-y-0 right-0 flex w-[88px] flex-col items-center justify-center gap-1 bg-red-500 text-xs font-bold text-white"
+        className="absolute inset-y-0 right-0 flex w-22 flex-col items-center justify-center gap-1 bg-red-500 text-xs font-bold text-white"
       >
         <TrashIcon className="size-5" />
         <span>削除</span>
