@@ -129,7 +129,7 @@ const InputForm = ({ type }: InputFormProps) => {
     setMessage("");
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const numericAmount = Number(amount);
 
     if (!amount || numericAmount <= 0) {
@@ -151,7 +151,7 @@ const InputForm = ({ type }: InputFormProps) => {
       amount: numericAmount,
     };
 
-    const currentTransactions = getTransactions();
+    const currentTransactions = await getTransactions();
 
     saveTransactions([...currentTransactions, newTransaction]);
 
