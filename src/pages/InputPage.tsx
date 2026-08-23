@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Footer from "../components/Footer";
 import {
@@ -69,6 +69,10 @@ const InputForm = ({ type }: InputFormProps) => {
   const [message, setMessage] = useState("");
 
   const typeLabel = type === "expense" ? "支出" : "収入";
+
+  useEffect(() => {
+    setSelectedCategory(null);
+  }, [type]);
 
   const handlePreviousDate = () => {
     setSelectedDate((currentDate) => {
@@ -210,6 +214,7 @@ const InputForm = ({ type }: InputFormProps) => {
       </div>
 
       <CategoryButtons
+        type={type}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
@@ -241,30 +246,37 @@ const InputForm = ({ type }: InputFormProps) => {
   );
 };
 
-const categories = [
-  "食費",
-  "日用品",
-  "教育費",
-  "美容",
-  "交際費",
-  "医療費",
-  "光熱費",
-  "交通費",
-  "通信費",
-  "趣味",
-  "投資",
-  "自分へのご褒美",
-];
+const categoriesByType: Record<TransactionType, string[]> = {
+  expense: [
+    "食費",
+    "日用品",
+    "教育費",
+    "美容",
+    "交際費",
+    "医療費",
+    "光熱費",
+    "交通費",
+    "通信費",
+    "趣味",
+    "投資",
+    "自分へのご褒美",
+  ],
+  income: ["給料", "おこづかい", "賞与", "副業", "投資", "売却", "手当"],
+};
 
 type CategoryButtonsProps = {
+  type: TransactionType;
   selectedCategory: string | null;
   setSelectedCategory: Dispatch<SetStateAction<string | null>>;
 };
 
 const CategoryButtons = ({
+  type,
   selectedCategory,
   setSelectedCategory,
 }: CategoryButtonsProps) => {
+  const categories = categoriesByType[type];
+
   return (
     <section className="pt-3">
       <p className="mb-3 text-sm font-bold text-gray-700">カテゴリー</p>
