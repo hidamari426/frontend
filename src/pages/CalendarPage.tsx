@@ -301,7 +301,7 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-gray-50">
+    <div className="mx-auto flex h-dvh w-full max-w-[900px] flex-col overflow-hidden bg-gray-50">
       {/* ヘッダー */}
       <header className="bg-blue-400 px-4 pb-4 pt-8 text-white">
         <div className="flex items-center justify-center">

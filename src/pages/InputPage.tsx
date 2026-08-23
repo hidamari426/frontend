@@ -12,7 +12,7 @@ const InputPage = () => {
   const [type, setType] = useState<TransactionType>("expense");
 
   return (
-    <div className="min-h-dvh bg-gray-50 pb-24">
+    <div className="mx-auto min-h-dvh w-full max-w-[900px] bg-gray-50 pb-24">
       <InputPageHeader type={type} setType={setType} />
       <InputForm type={type} />
       <Footer />

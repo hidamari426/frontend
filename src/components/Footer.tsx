@@ -13,7 +13,7 @@ const Footer = () => {
 
   return (
     <footer className="fixed inset-x-0 bottom-0 z-10 flex justify-center bg-white px-4 py-3">
-      <nav className="flex w-full max-w-3xl rounded-full border border-gray-200 bg-gray-50 p-1">
+      <nav className="flex w-full max-w-[900px] rounded-full border border-gray-200 bg-gray-50 p-1">
         <button
           type="button"
           onClick={() => navigate("/")}
