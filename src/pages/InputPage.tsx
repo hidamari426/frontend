@@ -22,10 +22,6 @@ const InputPage = () => {
 
 export default InputPage;
 
-/* ------------------------------
-   支出・収入の切り替え部分
------------------------------- */
-
 type InputPageHeaderProps = {
   type: TransactionType;
   setType: Dispatch<SetStateAction<TransactionType>>;
@@ -61,10 +57,6 @@ const InputPageHeader = ({ type, setType }: InputPageHeaderProps) => {
   );
 };
 
-/* ------------------------------
-   入力フォーム部分
------------------------------- */
-
 type InputFormProps = {
   type: TransactionType;
 };
@@ -94,7 +86,6 @@ const InputForm = ({ type }: InputFormProps) => {
     });
   };
 
-  // 画面表示用
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -113,7 +104,6 @@ const InputForm = ({ type }: InputFormProps) => {
     return `${year}年${month}月${day}日${weekdays[date.getDay()]}`;
   };
 
-  // 保存用：2026-08-13形式
   const formatStorageDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -123,7 +113,6 @@ const InputForm = ({ type }: InputFormProps) => {
   };
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 数字以外を除去
     const numericValue = event.target.value.replace(/[^\d]/g, "");
     setAmount(numericValue);
     setMessage("");
@@ -155,7 +144,6 @@ const InputForm = ({ type }: InputFormProps) => {
 
     saveTransactions([...currentTransactions, newTransaction]);
 
-    // 登録後に入力内容をリセット
     setMemo("");
     setAmount("");
     setSelectedCategory(null);
@@ -185,7 +173,6 @@ const InputForm = ({ type }: InputFormProps) => {
         </button>
       </div>
 
-      {/* メモ */}
       <div className="mt-2 grid grid-cols-[auto_24px_1fr_24px] items-center gap-x-2 border-b pb-3 pt-3">
         <p>メモ</p>
 
@@ -205,7 +192,6 @@ const InputForm = ({ type }: InputFormProps) => {
         <div aria-hidden="true" />
       </div>
 
-      {/* 金額 */}
       <div className="mt-2 grid grid-cols-[auto_24px_1fr_24px] items-center gap-x-2 border-b pb-3 pt-3">
         <p>{typeLabel}</p>
 
@@ -223,7 +209,6 @@ const InputForm = ({ type }: InputFormProps) => {
         <p>円</p>
       </div>
 
-      {/* カテゴリー */}
       <CategoryButtons
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
@@ -239,7 +224,6 @@ const InputForm = ({ type }: InputFormProps) => {
         </p>
       )}
 
-      {/* 登録ボタン */}
       <div className="pt-4">
         <button
           type="button"
@@ -256,10 +240,6 @@ const InputForm = ({ type }: InputFormProps) => {
     </div>
   );
 };
-
-/* ------------------------------
-   カテゴリー部分
------------------------------- */
 
 const categories = [
   "食費",

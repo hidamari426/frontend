@@ -36,10 +36,6 @@ const today = new Date();
 const DELETE_BUTTON_WIDTH = 88;
 const SWIPE_THRESHOLD = 44;
 
-/* ------------------------------
-   左スワイプできる明細
------------------------------- */
-
 const SwipeableTransaction = ({
   transaction,
   onDelete,
@@ -66,7 +62,6 @@ const SwipeableTransaction = ({
     const movedDistance = event.clientX - startXRef.current;
     const nextOffset = startOffsetRef.current + movedDistance;
 
-    // 右方向には動かさず、削除ボタンの幅まで左に動かす
     const limitedOffset = Math.max(
       -DELETE_BUTTON_WIDTH,
       Math.min(0, nextOffset),
@@ -99,7 +94,6 @@ const SwipeableTransaction = ({
 
   return (
     <div className="relative overflow-hidden border-b border-gray-200 bg-red-500">
-      {/* 削除ボタン */}
       <button
         type="button"
         onClick={handleDelete}
@@ -110,7 +104,6 @@ const SwipeableTransaction = ({
         <span>削除</span>
       </button>
 
-      {/* スワイプする明細本体 */}
       <div
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
@@ -159,10 +152,6 @@ const SwipeableTransaction = ({
     </div>
   );
 };
-
-/* ------------------------------
-   カレンダーページ
------------------------------- */
 
 const CalendarPage = () => {
   const [currentMonth, setCurrentMonth] = useState(
@@ -216,10 +205,6 @@ const CalendarPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  /* ------------------------------
-     日付ごとの収入・支出
-  ------------------------------ */
-
   const dailyTotals = useMemo(() => {
     return transactions.reduce<
       Record<string, { income: number; expense: number }>
@@ -236,10 +221,6 @@ const CalendarPage = () => {
       return totals;
     }, {});
   }, [transactions]);
-
-  /* ------------------------------
-     カレンダーの42マス
-  ------------------------------ */
 
   const calendarDays = useMemo<CalendarDay[]>(() => {
     const firstDayOfMonth = new Date(
@@ -272,10 +253,6 @@ const CalendarPage = () => {
     });
   }, [currentYear, currentMonthIndex, dailyTotals]);
 
-  /* ------------------------------
-     表示中の月の明細
-  ------------------------------ */
-
   const visibleTransactions = useMemo(() => {
     return transactions
       .filter((transaction) => {
@@ -291,10 +268,6 @@ const CalendarPage = () => {
         return b.id.localeCompare(a.id);
       });
   }, [transactions, currentYear, currentMonthIndex]);
-
-  /* ------------------------------
-     月間合計
-  ------------------------------ */
 
   const monthlyTotal = useMemo(() => {
     return visibleTransactions.reduce(
@@ -338,7 +311,6 @@ const CalendarPage = () => {
 
       <main className="flex min-h-0 flex-1 flex-col">
         <div className="shrink-0">
-          {/* 月選択 */}
           <section className="bg-white px-3 py-3">
             <div className="flex items-center gap-2">
               <button
@@ -367,7 +339,6 @@ const CalendarPage = () => {
             </div>
           </section>
 
-          {/* 曜日 */}
           <div className="grid grid-cols-7 border-b border-t border-gray-200 bg-white">
             {weekDays.map((weekDay, index) => (
               <div
@@ -385,7 +356,6 @@ const CalendarPage = () => {
             ))}
           </div>
 
-          {/* カレンダー本体 */}
           <div className="grid grid-cols-7 border-l border-gray-200 bg-white">
             {calendarDays.map((calendarDay, index) => {
               const weekIndex = index % 7;
@@ -431,7 +401,6 @@ const CalendarPage = () => {
             })}
           </div>
 
-          {/* 月間合計 */}
           <section className="grid grid-cols-3 bg-white px-3 py-4 text-center">
             <div>
               <p className="text-xs text-gray-500">収入</p>
@@ -460,7 +429,6 @@ const CalendarPage = () => {
           </section>
         </div>
 
-        {/* 明細一覧 */}
         <section className="min-h-0 flex-1 overflow-y-auto pb-24">
           {visibleTransactions.length > 0 ? (
             visibleTransactions.map((transaction) => (
