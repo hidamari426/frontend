@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import {
+  ArrowRightStartOnRectangleIcon,
   PencilSquareIcon,
   CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
+import { supabase } from "../utils/supabase";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -10,6 +12,11 @@ const Footer = () => {
 
   const isInputPage = location.pathname === "/";
   const isCalendarPage = location.pathname === "/calendar";
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <footer className="fixed inset-x-0 bottom-0 z-10 flex justify-center bg-white px-4 py-3">
@@ -34,6 +41,15 @@ const Footer = () => {
         >
           <CalendarDaysIcon className="size-6" />
           <span className="mt-1">カレンダー</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleSignOut}
+          className="flex flex-1 flex-col items-center rounded-full py-2 text-xs text-gray-600"
+        >
+          <ArrowRightStartOnRectangleIcon className="size-6" />
+          <span className="mt-1">ログアウト</span>
         </button>
       </nav>
     </footer>
