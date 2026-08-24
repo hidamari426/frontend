@@ -2,8 +2,7 @@ import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Footer from "../components/Footer";
 import {
-  getTransactions,
-  saveTransactions,
+  createTransaction,
   type Transaction,
   type TransactionType,
 } from "../types/transaction";
@@ -144,14 +143,17 @@ const InputForm = ({ type }: InputFormProps) => {
       amount: numericAmount,
     };
 
-    const currentTransactions = await getTransactions();
-
-    saveTransactions([...currentTransactions, newTransaction]);
-
-    setMemo("");
-    setAmount("");
-    setSelectedCategory(null);
-    setMessage(`${formatDate(selectedDate)}の${typeLabel}を登録しました`);
+    try {
+      await createTransaction(newTransaction);
+      setMemo("");
+      setAmount("");
+      setSelectedCategory(null);
+      setMessage(`${formatDate(selectedDate)}の${typeLabel}を登録しました`);
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "取引データを登録できませんでした",
+      );
+    }
   };
 
   return (

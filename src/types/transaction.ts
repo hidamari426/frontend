@@ -10,20 +10,58 @@ export type Transaction = {
   amount: number;
 };
 
-export const TRANSACTION_STORAGE_KEY = "money-app-transactions";
+export type TransactionInput = Omit<Transaction, "id">;
 
 export const getTransactions = async (): Promise<Transaction[]> => {
-  try {
-    let { data: transactions } = await supabase
-      .from("transactions")
-      .select("*");
+  const { data: transactions, error } = await supabase
+    .from("transactions")
+    .select("*");
 
-    return transactions as Transaction[];
-  } catch {
-    return [];
+  if (error) {
+    throw new Error("取引データを取得できませんでした");
   }
+
+  return (transactions ?? []) as Transaction[];
 };
 
-export const saveTransactions = (transactions: Transaction[]) => {
-  localStorage.setItem(TRANSACTION_STORAGE_KEY, JSON.stringify(transactions));
+export const createTransaction = async (
+  transaction: Transaction,
+): Promise<Transaction> => {
+  const { data, error } = await supabase
+    .from("transactions")
+    .insert(transaction)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error("取引データを登録できませんでした");
+  }
+
+  return data as Transaction;
+};
+
+export const updateTransaction = async (
+  id: string,
+  transaction: Partial<TransactionInput>,
+): Promise<Transaction> => {
+  const { data, error } = await supabase
+    .from("transactions")
+    .update(transaction)
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error("取引データを更新できませんでした");
+  }
+
+  return data as Transaction;
+};
+
+export const deleteTransaction = async (id: string): Promise<void> => {
+  const { error } = await supabase.from("transactions").delete().eq("id", id);
+
+  if (error) {
+    throw new Error("取引データを削除できませんでした");
+  }
 };

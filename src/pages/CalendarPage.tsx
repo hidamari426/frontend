@@ -12,8 +12,8 @@ import {
 } from "@heroicons/react/24/outline";
 import Footer from "../components/Footer";
 import {
+  deleteTransaction,
   getTransactions,
-  saveTransactions,
   type Transaction,
 } from "../types/transaction";
 
@@ -159,10 +159,17 @@ const CalendarPage = () => {
   );
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [message, setMessage] = useState("");
   useEffect(() => {
     const fetchTransactions = async () => {
-      const fetchedTransactions = await getTransactions();
-      setTransactions(fetchedTransactions);
+      try {
+        const fetchedTransactions = await getTransactions();
+        setTransactions(fetchedTransactions);
+      } catch (error) {
+        setMessage(
+          error instanceof Error ? error.message : "取引データを取得できませんでした",
+        );
+      }
     };
     fetchTransactions();
   }, []);
@@ -184,17 +191,17 @@ const CalendarPage = () => {
     );
   };
 
-  // 修正の必要有。
-  const handleDeleteTransaction = (transactionId: string) => {
-    setTransactions((currentTransactions) => {
-      const updatedTransactions = currentTransactions.filter(
-        (transaction) => transaction.id !== transactionId,
+  const handleDeleteTransaction = async (transactionId: string) => {
+    try {
+      await deleteTransaction(transactionId);
+      setTransactions((currentTransactions) =>
+        currentTransactions.filter((transaction) => transaction.id !== transactionId),
       );
-
-      saveTransactions(updatedTransactions);
-
-      return updatedTransactions;
-    });
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : "取引データを削除できませんでした",
+      );
+    }
   };
 
   const createDateKey = (date: Date) => {
@@ -310,6 +317,11 @@ const CalendarPage = () => {
       </header>
 
       <main className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-24">
+        {message && (
+          <p className="shrink-0 bg-red-50 px-4 py-2 text-center text-sm text-red-500">
+            {message}
+          </p>
+        )}
         <div className="shrink-0">
           <section className="bg-white px-3 py-3">
             <div className="flex items-center gap-2">
