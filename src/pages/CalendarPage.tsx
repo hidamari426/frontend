@@ -309,7 +309,7 @@ const CalendarPage = () => {
         </div>
       </header>
 
-      <main className="flex min-h-0 flex-1 flex-col">
+      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-24">
         <div className="shrink-0">
           <section className="bg-white px-3 py-3">
             <div className="flex items-center gap-2">
@@ -429,7 +429,7 @@ const CalendarPage = () => {
           </section>
         </div>
 
-        <section className="min-h-0 flex-1 overflow-y-auto pb-24">
+        <section className="shrink-0">
           {visibleTransactions.length > 0 ? (
             visibleTransactions.map((transaction) => (
               <div key={transaction.id}>
