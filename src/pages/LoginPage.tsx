@@ -30,7 +30,9 @@ const LoginPage = () => {
     setIsSubmitting(false);
 
     if (error) {
-      setMessage("Google ログインを開始できませんでした。設定を確認してください。");
+      setMessage(
+        "Google ログインを開始できませんでした。設定を確認してください。",
+      );
     }
   };
 
@@ -46,10 +48,7 @@ const LoginPage = () => {
     <main className="mx-auto flex min-h-dvh w-full max-w-[900px] items-center bg-gray-50 px-5 py-10">
       <section className="w-full rounded-2xl bg-white p-6 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-blue-500">MoneyBook</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Google アカウントでログインして家計簿を管理
-          </p>
+          <h1 className="text-2xl font-bold text-blue-500">My家計簿</h1>
         </div>
 
         <button
@@ -65,7 +64,6 @@ const LoginPage = () => {
         {message && (
           <p className="mt-4 text-center text-sm text-red-500">{message}</p>
         )}
-
       </section>
     </main>
   );
