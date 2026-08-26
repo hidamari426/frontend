@@ -10,7 +10,8 @@ const Footer = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isInputPage = location.pathname === "/";
+  const isInputPage =
+    location.pathname === "/" || location.pathname.startsWith("/edit/");
   const isCalendarPage = location.pathname === "/calendar";
 
   const handleSignOut = async () => {

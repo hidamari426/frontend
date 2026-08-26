@@ -5,6 +5,7 @@ import {
   useEffect,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -28,6 +29,7 @@ type CalendarDay = {
 type SwipeableTransactionProps = {
   transaction: Transaction;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 };
 
 const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
@@ -39,16 +41,19 @@ const SWIPE_THRESHOLD = 44;
 const SwipeableTransaction = ({
   transaction,
   onDelete,
+  onEdit,
 }: SwipeableTransactionProps) => {
   const [offsetX, setOffsetX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
   const startXRef = useRef(0);
   const startOffsetRef = useRef(0);
+  const isSwipeRef = useRef(false);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     startXRef.current = event.clientX;
     startOffsetRef.current = offsetX;
+    isSwipeRef.current = false;
     setIsDragging(true);
 
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -60,6 +65,11 @@ const SwipeableTransaction = ({
     }
 
     const movedDistance = event.clientX - startXRef.current;
+
+    if (Math.abs(movedDistance) > 8) {
+      isSwipeRef.current = true;
+    }
+
     const nextOffset = startOffsetRef.current + movedDistance;
 
     const limitedOffset = Math.max(
@@ -92,6 +102,15 @@ const SwipeableTransaction = ({
     onDelete(transaction.id);
   };
 
+  const handleEdit = () => {
+    if (isSwipeRef.current) {
+      isSwipeRef.current = false;
+      return;
+    }
+
+    onEdit(transaction.id);
+  };
+
   return (
     <div className="relative overflow-hidden border-b border-gray-200 bg-red-500">
       <button
@@ -109,6 +128,15 @@ const SwipeableTransaction = ({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerEnd}
         onPointerCancel={handlePointerEnd}
+        onClick={handleEdit}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            handleEdit();
+          }
+        }}
+        role="button"
+        tabIndex={0}
         style={{
           transform: `translateX(${offsetX}px)`,
           touchAction: "pan-y",
@@ -154,6 +182,7 @@ const SwipeableTransaction = ({
 };
 
 const CalendarPage = () => {
+  const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(
     () => new Date(today.getFullYear(), today.getMonth(), 1),
   );
@@ -202,6 +231,10 @@ const CalendarPage = () => {
         error instanceof Error ? error.message : "取引データを削除できませんでした",
       );
     }
+  };
+
+  const handleEditTransaction = (transactionId: string) => {
+    navigate(`/edit/${transactionId}`);
   };
 
   const createDateKey = (date: Date) => {
@@ -466,6 +499,7 @@ const CalendarPage = () => {
                     key={transaction.id}
                     transaction={transaction}
                     onDelete={handleDeleteTransaction}
+                    onEdit={handleEditTransaction}
                   />
                 ))}
               </div>

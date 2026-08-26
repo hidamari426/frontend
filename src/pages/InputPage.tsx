@@ -1,8 +1,17 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../components/Footer";
 import {
   createTransaction,
+  getTransactions,
+  updateTransaction,
   type TransactionInput,
   type TransactionType,
 } from "../types/transaction";
@@ -13,7 +22,7 @@ const InputPage = () => {
   return (
     <div className="mx-auto min-h-dvh w-full max-w-[900px] bg-gray-50 pb-24">
       <InputPageHeader type={type} setType={setType} />
-      <InputForm type={type} />
+      <InputForm type={type} setType={setType} />
       <Footer />
     </div>
   );
@@ -58,20 +67,68 @@ const InputPageHeader = ({ type, setType }: InputPageHeaderProps) => {
 
 type InputFormProps = {
   type: TransactionType;
+  setType: Dispatch<SetStateAction<TransactionType>>;
 };
 
-const InputForm = ({ type }: InputFormProps) => {
+const InputForm = ({ type, setType }: InputFormProps) => {
+  const { transactionId } = useParams();
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [memo, setMemo] = useState("");
   const [amount, setAmount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(Boolean(transactionId));
+  const skipNextCategoryResetRef = useRef(false);
 
   const typeLabel = type === "expense" ? "支出" : "収入";
 
+  const isEditing = Boolean(transactionId);
+
   useEffect(() => {
+    if (skipNextCategoryResetRef.current) {
+      skipNextCategoryResetRef.current = false;
+      return;
+    }
+
     setSelectedCategory(null);
   }, [type]);
+
+  useEffect(() => {
+    if (!transactionId) {
+      return;
+    }
+
+    const loadTransaction = async () => {
+      try {
+        const transactions = await getTransactions();
+        const transaction = transactions.find(
+          (currentTransaction) => currentTransaction.id === transactionId,
+        );
+
+        if (!transaction) {
+          setMessage("編集する取引が見つかりませんでした");
+          return;
+        }
+
+        const [year, month, day] = transaction.date.split("-").map(Number);
+        skipNextCategoryResetRef.current = true;
+        setType(transaction.type);
+        setSelectedDate(new Date(year, month - 1, day));
+        setMemo(transaction.memo);
+        setAmount(String(transaction.amount));
+        setSelectedCategory(transaction.category);
+      } catch (error) {
+        setMessage(
+          error instanceof Error ? error.message : "取引データを取得できませんでした",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadTransaction();
+  }, [setType, transactionId]);
 
   const handlePreviousDate = () => {
     setSelectedDate((currentDate) => {
@@ -143,6 +200,12 @@ const InputForm = ({ type }: InputFormProps) => {
     };
 
     try {
+      if (isEditing && transactionId) {
+        await updateTransaction(transactionId, newTransaction);
+        navigate("/calendar", { replace: true });
+        return;
+      }
+
       await createTransaction(newTransaction);
       setMemo("");
       setAmount("");
@@ -154,6 +217,10 @@ const InputForm = ({ type }: InputFormProps) => {
       );
     }
   };
+
+  if (isLoading) {
+    return <div className="px-4 py-8 text-center text-sm text-gray-400">読み込み中…</div>;
+  }
 
   return (
     <div className="px-4 py-3">
@@ -240,7 +307,7 @@ const InputForm = ({ type }: InputFormProps) => {
               : "bg-blue-400 hover:bg-blue-500"
           }`}
         >
-          {typeLabel}を登録
+          {isEditing ? `${typeLabel}を更新` : `${typeLabel}を登録`}
         </button>
       </div>
     </div>

@@ -58,6 +58,14 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/edit/:transactionId"
+          element={
+            <ProtectedRoute>
+              <InputPage />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
