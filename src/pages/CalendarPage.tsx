@@ -276,6 +276,18 @@ const CalendarPage = () => {
       });
   }, [transactions, currentYear, currentMonthIndex]);
 
+  const transactionsByDate = useMemo(() => {
+    const groupedTransactions = new Map<string, Transaction[]>();
+
+    visibleTransactions.forEach((transaction) => {
+      const transactionsOnDate = groupedTransactions.get(transaction.date) ?? [];
+      transactionsOnDate.push(transaction);
+      groupedTransactions.set(transaction.date, transactionsOnDate);
+    });
+
+    return Array.from(groupedTransactions.entries());
+  }, [visibleTransactions]);
+
   const monthlyTotal = useMemo(() => {
     return visibleTransactions.reduce(
       (total, transaction) => {
@@ -442,17 +454,20 @@ const CalendarPage = () => {
         </div>
 
         <section className="shrink-0">
-          {visibleTransactions.length > 0 ? (
-            visibleTransactions.map((transaction) => (
-              <div key={transaction.id}>
+          {transactionsByDate.length > 0 ? (
+            transactionsByDate.map(([date, transactionsOnDate]) => (
+              <div key={date}>
                 <div className="bg-blue-100 px-3 py-1 text-xs text-gray-600">
-                  {formatTransactionDate(transaction.date)}
+                  {formatTransactionDate(date)}
                 </div>
 
-                <SwipeableTransaction
-                  transaction={transaction}
-                  onDelete={handleDeleteTransaction}
-                />
+                {transactionsOnDate.map((transaction) => (
+                  <SwipeableTransaction
+                    key={transaction.id}
+                    transaction={transaction}
+                    onDelete={handleDeleteTransaction}
+                  />
+                ))}
               </div>
             ))
           ) : (
