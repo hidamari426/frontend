@@ -48,7 +48,7 @@ const LoginPage = () => {
     <main className="mx-auto flex min-h-dvh w-full max-w-[900px] items-center bg-gray-50 px-5 py-10">
       <section className="w-full rounded-2xl bg-white p-6 shadow-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-blue-500">My家計簿</h1>
+          <h1 className="text-2xl font-bold text-blue-500 mb-4">My家計簿</h1>
         </div>
 
         <button

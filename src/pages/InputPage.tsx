@@ -3,7 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Footer from "../components/Footer";
 import {
   createTransaction,
-  type Transaction,
+  type TransactionInput,
   type TransactionType,
 } from "../types/transaction";
 
@@ -134,8 +134,7 @@ const InputForm = ({ type }: InputFormProps) => {
       return;
     }
 
-    const newTransaction: Transaction = {
-      id: crypto.randomUUID(),
+    const newTransaction: TransactionInput = {
       type,
       date: formatStorageDate(selectedDate),
       memo: memo.trim(),

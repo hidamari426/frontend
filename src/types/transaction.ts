@@ -12,6 +12,15 @@ export type Transaction = {
 
 export type TransactionInput = Omit<Transaction, "id">;
 
+type DatabaseTransaction = TransactionInput & {
+  id: string | number;
+};
+
+const normalizeTransaction = (transaction: DatabaseTransaction): Transaction => ({
+  ...transaction,
+  id: String(transaction.id),
+});
+
 export const getTransactions = async (): Promise<Transaction[]> => {
   const { data: transactions, error } = await supabase
     .from("transactions")
@@ -21,11 +30,11 @@ export const getTransactions = async (): Promise<Transaction[]> => {
     throw new Error("取引データを取得できませんでした");
   }
 
-  return (transactions ?? []) as Transaction[];
+  return ((transactions ?? []) as DatabaseTransaction[]).map(normalizeTransaction);
 };
 
 export const createTransaction = async (
-  transaction: Transaction,
+  transaction: TransactionInput,
 ): Promise<Transaction> => {
   const { data, error } = await supabase
     .from("transactions")
@@ -37,7 +46,7 @@ export const createTransaction = async (
     throw new Error("取引データを登録できませんでした");
   }
 
-  return data as Transaction;
+  return normalizeTransaction(data as DatabaseTransaction);
 };
 
 export const updateTransaction = async (
@@ -55,7 +64,7 @@ export const updateTransaction = async (
     throw new Error("取引データを更新できませんでした");
   }
 
-  return data as Transaction;
+  return normalizeTransaction(data as DatabaseTransaction);
 };
 
 export const deleteTransaction = async (id: string): Promise<void> => {
