@@ -307,7 +307,7 @@ const InputForm = ({ type, setType }: InputFormProps) => {
               : "bg-blue-400 hover:bg-blue-500"
           }`}
         >
-          {isEditing ? `${typeLabel}を更新` : `${typeLabel}を登録`}
+          {isEditing ? `${typeLabel}を修正` : `${typeLabel}を登録`}
         </button>
       </div>
     </div>
