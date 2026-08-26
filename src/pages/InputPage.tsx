@@ -12,9 +12,11 @@ import {
   createTransaction,
   getTransactions,
   updateTransaction,
-  type TransactionInput,
-  type TransactionType,
-} from "../types/transaction";
+} from "../features/transactions/api";
+import type {
+  TransactionInput,
+  TransactionType,
+} from "../features/transactions/types";
 
 const InputPage = () => {
   const [type, setType] = useState<TransactionType>("expense");

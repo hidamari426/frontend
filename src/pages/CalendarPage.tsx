@@ -12,11 +12,8 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import Footer from "../components/Footer";
-import {
-  deleteTransaction,
-  getTransactions,
-  type Transaction,
-} from "../types/transaction";
+import { deleteTransaction, getTransactions } from "../features/transactions/api";
+import type { Transaction } from "../features/transactions/types";
 
 type CalendarDay = {
   date: Date;

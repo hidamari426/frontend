@@ -1,16 +1,5 @@
-import { supabase } from "../utils/supabase";
-export type TransactionType = "expense" | "income";
-
-export type Transaction = {
-  id: string;
-  type: TransactionType;
-  date: string;
-  memo: string;
-  category: string;
-  amount: number;
-};
-
-export type TransactionInput = Omit<Transaction, "id">;
+import { supabase } from "../../utils/supabase";
+import type { Transaction, TransactionInput } from "./types";
 
 type DatabaseTransaction = TransactionInput & {
   id: string | number;
@@ -30,7 +19,7 @@ export const getTransactions = async (): Promise<Transaction[]> => {
     throw new Error("取引データを取得できませんでした");
   }
 
-  return ((transactions ?? []) as DatabaseTransaction[]).map(normalizeTransaction);
+  return (transactions as DatabaseTransaction[] ?? []).map(normalizeTransaction);
 };
 
 export const createTransaction = async (
