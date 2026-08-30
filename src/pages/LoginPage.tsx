@@ -21,10 +21,13 @@ const LoginPage = () => {
     setMessage("");
     setIsSubmitting(true);
 
+    // Always return to the deployment that initiated the OAuth flow.
+    const redirectTo = new URL("/", window.location.origin).toString();
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/`,
+        redirectTo,
       },
     });
 
